@@ -9,46 +9,7 @@
 Встановіть правильний тип для options (клас також може бути типом для options).
 
 ```ts
-import React, { useEffect, useRef } from "react";
 
-// Опишіть Props
-export function Observer({ children, onContentEndVisible }: Props) {
-  // Вкажіть правильний тип для useRef зверніть увагу, в який DOM елемент ми його передаємо
-  const endContentRef = useRef(null);
-
-  useEffect(() => {
-    // Вкажіть правильний тип для options, підказка, клас також можна вказувати як тип
-    const options = {
-      rootMargin: "0px",
-      threshold: 1.0,
-      root: null,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.intersectionRatio > 0) {
-          onContentEndVisible();
-          observer.disconnect();
-        }
-      });
-    }, options);
-
-    if (endContentRef.current) {
-      observer.observe(endContentRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [onContentEndVisible]);
-
-  return (
-    <div>
-      {children}
-      <div ref={endContentRef} />
-    </div>
-  );
-}
 ```
 
 # Завдання 2
@@ -65,6 +26,22 @@ Action: Це тип, що представляє можливі дії, які �
 
 ```ts
 import React, { useReducer } from "react";
+
+// Опис типу для RequestStep
+type RequestStep = "idle" | "start" | "pending" | "finished";
+
+// Опис типу для State
+interface State {
+  isRequestInProgress: boolean;
+  requestStep: RequestStep;
+}
+
+// Опис типу для Action
+type Action =
+  | { type: "START_REQUEST" }
+  | { type: "PENDING_REQUEST" }
+  | { type: "FINISH_REQUEST" }
+  | { type: "RESET_REQUEST" };
 
 const initialState: State = {
   isRequestInProgress: false,
@@ -130,7 +107,7 @@ import React, { useState } from "react";
 export function FormComponent() {
   const [value, setValue] = useState("");
 
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
